@@ -1,0 +1,37 @@
+name: PresensiApp
+description: Aplikasi Presensi Siswa - QR Code & GPS
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.2.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.6
+  dio: ^5.4.0
+  flutter_secure_storage: ^9.0.0
+  mobile_scanner: ^3.5.6
+  geolocator: ^11.0.0
+  permission_handler: ^11.3.0
+  device_info_plus: ^9.1.2
+  uuid: ^4.3.3
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+  flutter_launcher_icons: ^0.14.1
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/icon/
+
+flutter_launcher_icons:
+  android: true
+  image_path: "assets/icon/app_icon.png"
+  min_sdk_android: 21
+  adaptive_icon_background: "#088395"
+  adaptive_icon_foreground: "assets/icon/app_icon_foreground.png"

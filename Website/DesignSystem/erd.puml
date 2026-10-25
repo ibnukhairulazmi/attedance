@@ -1,0 +1,105 @@
+@startuml ERD_Sistem_Presensi
+
+left to right direction
+skinparam nodesep 100
+skinparam ranksep 100
+
+hide methods
+hide stereotypes
+skinparam linetype straight
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam entity {
+    BackgroundColor #F8FFFE
+    BorderColor #1D9E75
+    FontSize 13
+}
+
+entity "dosen" as dosen {
+    * id : bigint <<PK>>
+    --
+    nidn : varchar
+    nama : varchar
+    email : varchar
+    password : varchar
+    is_active : boolean
+    remember_token : text
+}
+
+entity "kelas" as kelas {
+    * id : bigint <<PK>>
+    --
+    nama_kelas : varchar
+    prodi : enum
+    angkatan : year
+}
+
+entity "mahasiswa" as mahasiswa {
+    * id : bigint <<PK>>
+    --
+    kelasid : bigint <<FK>>
+    nim : varchar
+    nama : varchar
+    email : varchar
+    password : varchar
+    device_id : text
+    device_token : text
+    api_token : text
+    is_locked : boolean
+}
+
+entity "jadwal" as jadwal {
+    * id : bigint <<PK>>
+    --
+    kelas_id : bigint <<FK>>
+    dosen_id : bigint <<FK>>
+    mata_kuliah_id : bigint <<FK>>
+    hari : enum
+    jam_mulai : time
+    jam_selesai : time
+}
+
+entity "mata_kuliah" as mata_kuliah {
+    * id : bigint <<PK>>
+    --
+    kode_mk : varchar
+    nama_mk : varchar
+    sks : integer
+}
+
+entity "sesi_presensi" as sesi_presensi {
+    * id : bigint <<PK>>
+    --
+    jadwal_id : bigint <<FK>>
+    tanggal : date
+    qr_token : varchar
+    qr_expired_at : datetime
+    kelas_latitude : double
+    kelas_longitude : double
+    radius_meter : integer
+    status : enum
+}
+
+entity "presensi" as presensi {
+    * id : bigint <<PK>>
+    --
+    sesi_presensi_id : bigint <<FK>>
+    mahasiswa_id : bigint <<FK>>
+    status : enum
+    scan_latitude : double
+    scan_longitude : double
+    jarak_meter : integer
+    scan_time : datetime
+    ip_address : varchar
+    device_id : varchar
+}
+
+dosen ||--o{ jadwal : mengajar
+kelas ||--o{ mahasiswa : memiliki
+kelas ||--o{ jadwal : digunakan
+mata_kuliah ||--o{ jadwal : memiliki
+jadwal ||--o{ sesi_presensi : memiliki
+sesi_presensi ||--o{ presensi : mencatat
+mahasiswa ||--o{ presensi : melakukan
+
+@enduml

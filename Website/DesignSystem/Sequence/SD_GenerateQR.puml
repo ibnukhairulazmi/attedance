@@ -1,0 +1,18 @@
+@startuml
+title Sequence Diagram Generate QR Code
+
+actor "Dosen" as Dosen
+participant "Frontend" as App
+participant "Backend" as System
+database "Database" as DB
+
+Dosen -> App : Membuat sesi presensi
+App -> System : Request generate QR Code
+
+System -> DB : Simpan data sesi
+DB --> System : Data tersimpan
+
+System --> App : QR Code berhasil dibuat
+App --> Dosen : Tampilkan QR Code
+
+@enduml

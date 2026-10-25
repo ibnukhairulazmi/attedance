@@ -1,0 +1,23 @@
+@startuml
+title Sequence Diagram Login
+
+actor "Mahasiswa/Dosen" as User
+participant "Frontend" as App
+participant "Backend" as System
+database "Database" as DB
+
+User -> App : Input username & password
+App -> System : Kirim data login
+
+System -> DB : Validasi akun
+DB --> System : Data pengguna
+
+alt Login berhasil
+    System --> App : Status berhasil
+    App --> User : Masuk ke dashboard
+else Login gagal
+    System --> App : Status gagal
+    App --> User : Tampilkan pesan error
+end
+
+@enduml

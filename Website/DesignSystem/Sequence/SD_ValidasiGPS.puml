@@ -1,0 +1,28 @@
+@startuml
+title Sequence Diagram Validasi GPS
+
+actor Mahasiswa
+participant "Aplikasi" as App
+participant "Sistem" as System
+participant "GPS Device" as GPS
+participant "Database" as DB
+
+Mahasiswa -> App : Melakukan presensi
+
+App -> GPS : Ambil lokasi pengguna
+GPS --> App : Data lokasi
+
+App -> System : Kirim data lokasi
+
+System -> DB : Ambil titik lokasi kampus
+DB --> System : Data lokasi kampus
+
+alt Lokasi valid
+    System --> App : Presensi diterima
+    App --> Mahasiswa : Presensi berhasil
+else Lokasi tidak valid
+    System --> App : Presensi ditolak
+    App --> Mahasiswa : Diluar area presensi
+end
+
+@enduml

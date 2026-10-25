@@ -1,0 +1,119 @@
+@startuml Sistem_Presensi_Model
+
+left to right direction
+
+skinparam classAttributeIconSize 0
+skinparam classFontSize 13
+skinparam classHeaderBackgroundColor #E1F5EE
+skinparam classBorderColor #1D9E75
+skinparam arrowColor #374151
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam linetype ortho
+
+class Dosen {
+  + id : bigint
+  + nidn : string
+  + nama : string
+  + email : string
+  + password : string
+  + is_active : boolean
+  ==
+  + todaySchedules() : Collection
+}
+
+class Kelas {
+  + id : bigint
+  + nama_kelas : string
+  + prodi : string
+  + angkatan : year
+}
+
+class Mahasiswa {
+  + id : bigint
+  + kelas_id : bigint <<FK>>
+  + nim : string
+  + nama : string
+  + email : string
+  + password : string
+  + device_id : string
+  + device_token : string
+  + api_token : string
+  + is_locked : boolean
+  ==
+  + generateApiToken() : string
+  + verifyToken() : bool
+}
+
+class Jadwal {
+  + id : bigint
+  + kelas_id : bigint <<FK>>
+  + dosen_id : bigint <<FK>>
+  + mata_kuliah_id : bigint <<FK>>
+  + hari : string
+  + jam_mulai : time
+  + jam_selesai : time
+  + is_active : boolean
+  ==
+  + activeSession() : HasOne
+  + isActiveNow() : bool
+  + todaySession() : HasOne
+  + isTodaySessionClosed() : bool
+}
+
+class MataKuliah {
+  + id : bigint
+  + kode_mk : string
+  + nama_mk : string
+  + sks : int
+}
+
+class PresensiSession {
+  + id : bigint
+  + jadwal_id : bigint <<FK>>
+  + tanggal : date
+  + qr_token : string
+  + qr_expired_at : datetime
+  + kelas_latitude : double
+  + kelas_longitude : double
+  + radius_meter : integer
+  + status : string
+  ==
+  + isExpired() : bool
+  + presentCount() : int
+  + totalStudents() : int
+  + createSession() : PresensiSession
+  + generateToken() : string
+  + verifyToken() : bool
+  + expireSession() : void
+}
+
+class Presensi {
+  + id : bigint
+  + sesi_presensi_id : bigint <<FK>>
+  + mahasiswa_id : bigint <<FK>>
+  + status : string
+  + scan_latitude : double
+  + scan_longitude : double
+  + jarak_meter : integer
+  + scan_time : datetime
+  + ip_address : string
+  + device_id : string
+  ==
+  + isValidCoordinate() : bool
+  + isWithinRadius() : array
+  + calculateDistance() : int
+  + processScan() : array
+  + monthlyReport() : array
+}
+
+' Relasi Antar Class
+Dosen           "1" o-- "0..*" Jadwal
+Kelas           "1" o-- "0..*" Mahasiswa
+Kelas           "1" o-- "0..*" Jadwal
+MataKuliah      "1" o-- "0..*" Jadwal
+Jadwal          "1" *-- "0..*" PresensiSession
+PresensiSession "1" *-- "0..*" Presensi
+Mahasiswa       "1" o-- "0..*" Presensi
+
+@enduml

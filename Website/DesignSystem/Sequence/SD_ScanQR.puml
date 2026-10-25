@@ -1,0 +1,36 @@
+@startuml
+title Sequence Diagram Scan QR Code
+
+actor "Mahasiswa" as Mahasiswa
+participant "Frontend" as App
+participant "Scanner QR" as Scanner
+participant "Backend" as System
+database "Database" as DB
+
+Mahasiswa -> App : Membuka menu scan presensi
+App -> Scanner : Aktifkan kamera scanner
+
+Mahasiswa -> Scanner : Scan QR Code
+Scanner --> App : Data QR Code
+
+App -> System : Kirim data QR Code
+
+System -> DB : Cek validitas QR Code
+DB --> System : Status QR Code
+
+alt QR Code valid dan aktif
+
+    System -> DB : Cek data sesi presensi
+    DB --> System : Data sesi ditemukan
+
+    System --> App : Presensi dapat dilanjutkan
+    App --> Mahasiswa : Presensi berhasil
+
+else QR Code tidak valid atau expired
+
+    System --> App : Presensi gagal
+    App --> Mahasiswa : QR Code tidak valid
+
+end
+
+@enduml
